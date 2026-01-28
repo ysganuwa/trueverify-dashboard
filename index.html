@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueVerify Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
+body { display:flex; background:#f4f6f9; }
+
+/* Sidebar */
+.sidebar { width:220px; height:100vh; background:#fff; position:fixed; box-shadow:2px 0 6px rgba(0,0,0,0.1); }
+.sidebar .logo { text-align:center; padding:20px; }
+.sidebar .logo img { width:120px; }
+.sidebar ul { list-style:none; padding:0; margin:0; }
+.sidebar li { padding:15px 20px; display:flex; align-items:center; gap:10px; cursor:pointer; color:#333; font-weight:500; }
+.sidebar li:hover, .sidebar li.active { background:#0d6efd; color:#fff; }
+hr { margin:10px 0; border:none; border-top:1px solid #ddd; }
+
+/* Main */
+.main-content { margin-left:220px; flex:1; display:flex; flex-direction:column; }
+
+/* Topbar */
+.topbar { background:#fff; padding:15px 30px; display:flex; justify-content:flex-end; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.topbar i { margin-right:15px; cursor:pointer; }
+.profile { width:35px; border-radius:50%; }
+
+/* Cards */
+.cards { display:flex; gap:20px; padding:20px; }
+.card { flex:1; background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); text-align:center; }
+.card h3 { color:#555; margin-bottom:10px; }
+.card p { font-size:1.3em; font-weight:bold; }
+
+/* Verification Grid */
+.verification-options { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:15px; padding:20px; }
+.verify-card { background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center; cursor:pointer; transition:0.3s; font-weight:500; }
+.verify-card i { font-size:1.6em; color:#0d6efd; display:block; margin-bottom:8px; }
+.verify-card:hover { transform:translateY(-5px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+
+/* Verification Form */
+#verificationForm { display:none; background:#fff; margin:20px; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+#verificationForm input { width:100%; padding:10px; margin:10px 0; }
+#verificationForm button { background:#0d6efd; color:#fff; border:none; padding:10px 15px; cursor:pointer; border-radius:5px; }
+
+/* History Sections */
+section h2 { margin-bottom:10px; }
+section div { margin-bottom:5px; }
+
+/* Footer */
+footer { margin-top:auto; background:#0d6efd; color:#fff; text-align:center; padding:15px; }
+
+/* Responsive */
+@media(max-width:768px){ .sidebar{width:60px;} .main-content{margin-left:60px;} .sidebar li span{display:none;} }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="logo"><img src="logo.png" alt="TrueVerify"></div>
+  <ul>
+    <li class="active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></li>
+    <li onclick="openForm('nin')"><i class="fas fa-id-card"></i><span>NIN Verification</span></li>
+    <li onclick="openForm('nin_phone')"><i class="fas fa-phone"></i><span>NIN With Phone</span></li>
+    <li onclick="openForm('bvn')"><i class="fas fa-users"></i><span>BVN Verification</span></li>
+    <hr>
+    <li><i class="fas fa-history"></i><span>Transactions History</span></li>
+    <li><i class="fas fa-history"></i><span>Verifications History</span></li>
+  </ul>
+</aside>
+
+<!-- Main -->
+<main class="main-content">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <i class="fas fa-th-large"></i>
+    <i class="fas fa-sun"></i>
+    <img src="logo.png" class="profile">
+  </header>
+
+  <!-- Wallet Cards -->
+  <section class="cards">
+    <div class="card">
+      <h3>Wallet Balance</h3>
+      <p id="wallet">₦0</p>
+    </div>
+    <div class="card">
+      <h3>Total Transactions</h3>
+      <p id="totalTransactions">0</p>
+    </div>
+  </section>
+
+  <!-- Verification Options -->
+  <section class="verification-options">
+    <div class="verify-card" onclick="openForm('nin')"><i class="fas fa-id-card"></i>NIN Verification</div>
+    <div class="verify-card" onclick="openForm('nin_phone')"><i class="fas fa-phone"></i>NIN With Phone</div>
+    <div class="verify-card" onclick="openForm('bvn')"><i class="fas fa-users"></i>BVN Verification</div>
+    <div class="verify-card" onclick="openForm('bvn_phone')"><i class="fas fa-phone-square-alt"></i>BVN With Phone</div>
+    <div class="verify-card"><i class="fas fa-credit-card"></i>BVN Card</div>
+    <div class="verify-card"><i class="fas fa-check-circle"></i>IPE Clearance</div>
+    <div class="verify-card"><i class="fas fa-search"></i>Validation</div>
+    <div class="verify-card"><i class="fas fa-unlink"></i>Delink & Retrieval</div>
+  </section>
+
+  <!-- Verification Form -->
+  <section id="verificationForm">
+    <h2 id="formTitle">Verification</h2>
+    <input type="text" id="idNumber" placeholder="Enter NIN / BVN">
+    <button onclick="submitVerification()">Verify</button>
+    <div id="result" style="margin-top:15px;"></div>
+  </section>
+
+  <!-- Transactions History -->
+  <section id="transactionsHistory" style="padding:20px;">
+    <h2>Transactions History</h2>
+    <div id="transactionsList">Loading...</div>
+  </section>
+
+  <!-- Verifications History -->
+  <section id="verificationsHistory" style="padding:20px;">
+    <h2>Verifications History</h2>
+    <div id="verificationsList">Loading...</div>
+  </section>
+
+  <footer>
+    &copy; 2026 TrueVerify. All rights reserved.
+  </footer>
+</main>
+
+<script>
+let currentType = '';
+
+// Open verification form
+function openForm(type){
+    currentType = type;
+    document.getElementById('verificationForm').style.display = 'block';
+    const titles = {
+        nin:'NIN Verification',
+        nin_phone:'NIN With Phone',
+        bvn:'BVN Verification',
+        bvn_phone:'BVN With Phone'
+    };
+    document.getElementById('formTitle').innerText = titles[type] || 'Verification';
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('idNumber').value = '';
+}
+
+// Load wallet
+async function loadBalance(){
+    try{
+        const res = await fetch('http://localhost:3000/balance');
+        const data = await res.json();
+        document.getElementById('wallet').innerText = "₦" + data.balance;
+    }catch(err){ console.error(err); }
+}
+
+// Load transactions
+async function loadTransactions(){
+    try{
+        const res = await fetch('http://localhost:3000/transactions');
+        const data = await res.json();
+        const container = document.getElementById('transactionsList');
+        if(data.length===0){ container.innerHTML="<p>No transactions yet.</p>"; return; }
+        container.innerHTML = data.map(tx=>`<div style="border-bottom:1px solid #ccc;padding:8px;"><b>${tx.date}</b> - ${tx.type} - ${tx.idNumber} - Charged: ₦${tx.charged}</div>`).join('');
+        document.getElementById('totalTransactions').innerText = data.length;
+    }catch(err){ console.error(err); }
+}
+
+// Load verifications
+async function loadVerifications(){
+    try{
+        const res = await fetch('http://localhost:3000/verifications');
+        const data = await res.json();
+        const container = document.getElementById('verificationsList');
+        if(data.length===0){ container.innerHTML="<p>No verifications yet.</p>"; return; }
+        container.innerHTML = data.map(v=>`<div style="border-bottom:1px solid #ccc;padding:8px;"><b>${v.date}</b> - ${v.type} - Number: ${v.idNumber} - Result: ${v.data.firstname || 'N/A'} ${v.data.surname || ''}</div>`).join('');
+    }catch(err){ console.error(err); }
+}
+
+// Submit verification
+async function submitVerification(){
+    const idNumber = document.getElementById('idNumber').value;
+    const resultDiv = document.getElementById('result');
+    if(!idNumber){ resultDiv.innerHTML='<p style="color:red">Please enter a number</p>'; return; }
+    resultDiv.innerHTML='<p style="color:blue">Verifying...</p>';
+    try{
+        const res = await fetch('http://localhost:3000/verify',{
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify({ type:currentType, idNumber })
+        });
+        const data = await res.json();
+        if(data.status!=='success'){ resultDiv.innerHTML=`<p style="color:red">${data.message}</p>`; return; }
+        document.getElementById('wallet').innerText="₦"+data.balance;
+        const user = data.data;
+        resultDiv.innerHTML=`<div style="background:#f9f9f9;border-left:5px solid #0d6efd;padding:15px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+            <p style="color:green;font-weight:bold;">Verification Successful</p>
+            <p><b>Charged:</b> ₦${data.charged}</p><hr>
+            <p><b>Firstname:</b> ${user.firstname}</p>
+            <p><b>Middlename:</b> ${user.middlename}</p>
+            <p><b>Surname:</b> ${user.surname}</p>
+            <p><b>Gender:</b> ${user.gender}</p>
+            <p><b>Date of Birth:</b> ${user.birthdate}</p>
+            <p><b>NIN:</b> ${user.nin || 'N/A'}</p>
+            <p><b>Phone:</b> ${user.telephoneno || 'N/A'}</p>
+            <p><b>Address:</b> ${user.residence_address || ''}, ${user.residence_town || ''}, ${user.residence_state || ''}</p>
+        </div>`;
+        loadTransactions();
+        loadVerifications();
+    }catch(err){
+        resultDiv.innerHTML='<p style="color:red">Server connection failed</p>';
+    }
+}
+
+// Initial load
+loadBalance();
+loadTransactions();
+loadVerifications();
+</script>
+
+</body>
+</html>
