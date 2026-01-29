@@ -1,3 +1,4 @@
+HEAD
 body {
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -36,3 +37,53 @@ th, td {
   padding: 8px;
   text-align: left;
 }
+
+style>
+* { box-sizing: border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
+body { display:flex; background:#f4f6f9; }
+
+/* Sidebar */
+.sidebar { width:220px; height:100vh; background:#fff; position:fixed; box-shadow:2px 0 6px rgba(0,0,0,0.1); }
+.sidebar .logo { text-align:center; padding:20px; }
+.sidebar .logo img { width:120px; }
+.sidebar ul { list-style:none; padding:0; margin:0; }
+.sidebar li { padding:15px 20px; display:flex; align-items:center; gap:10px; cursor:pointer; color:#333; font-weight:500; }
+.sidebar li:hover, .sidebar li.active { background:#0d6efd; color:#fff; }
+hr { margin:10px 0; border:none; border-top:1px solid #ddd; }
+
+/* Main */
+.main-content { margin-left:220px; flex:1; display:flex; flex-direction:column; }
+
+/* Topbar */
+.topbar { background:#fff; padding:15px 30px; display:flex; justify-content:flex-end; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.topbar i { margin-right:15px; cursor:pointer; }
+.profile { width:35px; border-radius:50%; }
+
+/* Cards */
+.cards { display:flex; gap:20px; padding:20px; }
+.card { flex:1; background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); text-align:center; }
+.card h3 { color:#555; margin-bottom:10px; }
+.card p { font-size:1.3em; font-weight:bold; }
+
+/* Verification Grid */
+.verification-options { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:15px; padding:20px; }
+.verify-card { background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center; cursor:pointer; transition:0.3s; font-weight:500; }
+.verify-card i { font-size:1.6em; color:#0d6efd; display:block; margin-bottom:8px; }
+.verify-card:hover { transform:translateY(-5px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+
+/* Verification Form */
+#verificationForm { display:none; background:#fff; margin:20px; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+#verificationForm input { width:100%; padding:10px; margin:10px 0; }
+#verificationForm button { background:#0d6efd; color:#fff; border:none; padding:10px 15px; cursor:pointer; border-radius:5px; }
+
+/* History Sections */
+section h2 { margin-bottom:10px; }
+section div { margin-bottom:5px; }
+
+/* Footer */
+footer { margin-top:auto; background:#0d6efd; color:#fff; text-align:center; padding:15px; }
+
+/* Responsive */
+@media(max-width:768px){ .sidebar{width:60px;} .main-content{margin-left:60px;} .sidebar li span{display:none;} }
+</style>
+475a1eb5d5540c8d07517cfe5912729e4a1b4f82
